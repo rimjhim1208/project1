@@ -1,0 +1,71 @@
+---
+- name: Unmount partitions if mounted
+  mount:
+    path: "{{ item }}"
+    state: unmounted
+  with_items:
+    - /part1
+    - /part2
+  ignore_errors: yes
+
+- name: Remove existing partitions
+  command: "parted -s /dev/sdc rm {{ item }}"
+  with_sequence: start=1 end=2
+  ignore_errors: yes
+
+- name: Create partition table
+  parted:
+    device: /dev/sdc
+    label: gpt
+    state: present
+  ignore_errors: yes
+
+- name: Partition disk for part1
+  parted:
+    device: /dev/sdc
+    number: 1
+    state: present
+    part_start: 1MiB
+    part_end: 4096MiB
+    unit: MiB
+    fs_type: xfs
+  ignore_errors: yes
+
+- name: Partition disk for part2
+  parted:
+    device: /dev/sdc
+    number: 2
+    state: present
+    part_start: 4097MiB
+    part_end: 9216MiB
+    unit: MiB
+    fs_type: ext4
+  ignore_errors: yes
+
+- name: Create filesystem for part1
+  filesystem:
+    fstype: xfs
+    dev: /dev/sdc1
+    force: yes
+
+- name: Create filesystem for part2
+  filesystem:
+    fstype: ext4
+    dev: /dev/sdc2
+    force: yes
+
+- name: Mount part1
+  mount:
+    path: /part1
+    src: /dev/sdc1
+    fstype: xfs
+    state: mounted
+    opts: defaults
+
+- name: Mount part2
+  mount:
+    path: /part2
+    src: /dev/sdc2
+    fstype: ext4
+    state: mounted
+    opts: defaults

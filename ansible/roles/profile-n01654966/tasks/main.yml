@@ -1,0 +1,5 @@
+---
+- name: Update /etc/profile
+  lineinfile:
+    path: /etc/profile
+    line: "#Test block added by Ansible……rimjhim1208\nexport TMOUT=1500"

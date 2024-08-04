@@ -1,0 +1,22 @@
+[linux]
+#n01654966-c-vm-1.eastus.cloudapp.azure.com ansible_user=n01654966 ansible_ssh_private_key_file=~/.ssh/id_rsa
+#n01654966-c-vm-2.eastus.cloudapp.azure.com ansible_user=n01654966 ansible_ssh_private_key_file=~/.ssh/id_rsa
+linux-vm1-n01654966.eastus.cloudapp.azure.com ansible_user=rimjhim1208 ansible_ssh_private_key_file=~/.ssh/id_rsa
+linux-vm2-n01654966.eastus.cloudapp.azure.com ansible_user=rimjhim1208 ansible_ssh_private_key_file=~/.ssh/id_rsa
+linux-vm3-n01654966.eastus.cloudapp.azure.com ansible_user=rimjhim1208 ansible_ssh_private_key_file=~/.ssh/id_rsa
+
+[windows]
+#n01654966-w-vm1.eastus.cloudapp.azure.com
+n01654966-win-0.eastus.cloudapp.azure.com
+
+[os:children]
+linux
+windows
+
+[windows:vars]
+ansible_user = n01654966
+ansible_password = rimjhim@1208
+ansible_connection = winrm
+ansible_port = 5985
+ansible_winrm_transport = ntlm
+ansible_winrm_server_cert_validation = ignore
